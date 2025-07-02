@@ -17,10 +17,9 @@ public class AsyncRequestProcessor {
     public CompletableFuture<UserData> processRequest(String userId) {
         UserData cachedData = cache.get(userId);
         if (cachedData != null) {
-            System.out.println("Data received for user " + userId + " from the cache.");
             return CompletableFuture.completedFuture(cachedData);
         }
-        System.out.println("Asynchronous request processing for the user " + userId + " ....");
+
         return CompletableFuture.supplyAsync(() -> {
             try {
                 TimeUnit.SECONDS.sleep(2);
@@ -30,8 +29,7 @@ public class AsyncRequestProcessor {
                 UserData userData = new UserData(userId, detalis);
 
                 cache.put(userId, userData);
-                System.out.println("User data processing "
-                        + "and caching completed " + userId + ".");
+
                 return userData;
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -39,6 +37,5 @@ public class AsyncRequestProcessor {
                         + " request for user " + userId, e);
             }
         }, executor);
-
     }
 }
